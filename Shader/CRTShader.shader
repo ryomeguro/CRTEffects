@@ -7,12 +7,14 @@
         Pass
         {
             HLSLPROGRAM
+            
+            const float PI = 3.14159265;
 
             #pragma vertex VertDefault
             #pragma fragment Frag
             
             #include "Packages/com.unity.postprocessing/PostProcessing/Shaders/StdLib.hlsl"
-           
+            
             float rand(float2 st) {
                 return frac(sin(dot(st.xy, float2(12.9898, 78.233))) * 43758.5453);
             }
@@ -38,7 +40,7 @@
             }
 
             TEXTURE2D_SAMPLER2D(_MainTex, sampler_MainTex);
-
+            
             float _Distort;
             float _ScreenWidth;
             float _ScreenHeight;
@@ -56,7 +58,10 @@
                 
                 //画面のズレ
                 float2 linecoord = distcoord; 
-                linecoord.x += (sin(_Time.g + linecoord.y) > 0.5) * 0.002;
+                //linecoord.x += (sin(_Time.r * 1.5 + linecoord.y * 0.7) > 0.9) * 0.05;
+                float linedistsin = sin(_Time.g + linecoord.y * 2 * PI);
+                float linedistwidth = 0.995;
+                linecoord.x += (linedistsin > linedistwidth) * (linedistsin - linedistwidth);
                 linecoord.x += (sin(_Time.a * 100 + linecoord.y * 10)) * 0.0005;
                 
                 //下部の圧縮された部分
